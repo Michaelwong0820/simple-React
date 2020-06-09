@@ -29,6 +29,13 @@ export default class index extends Component {
                 conut:this.clec()
             })
         })
+        //页面刷新时存储商品信息
+        window.onbeforeunload = () => {
+            localStorage.setItem('GOODS',JSON.stringify(store.getState()))
+        }
+    }
+    componentWillUnmount() {
+        store.unsubscribe&&store.unsubscribe()
     }
     render() {
         return (
