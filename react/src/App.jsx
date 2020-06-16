@@ -24,9 +24,10 @@ import PropsType from './components/PropsType'
 
 // 仓库
 // import Index from './components/counter/index'
-import Index from './components/counter/index-Redux'
+// import Index from './components/counter/index-Redux'
 
 // import Index from './components/cart/index'
+import Index from './components/cart-Redux/index'
 // 根组件
 class App extends React.Component{
     // jsx语法

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Button } from 'element-react';
-import store from './store/store'
+// import store from './store/store'
+import {connect} from 'react-redux'
 import {addActions,addActionsAsync} from './store/actionCreators'
-export default class goodsList extends Component {
+class goodsList extends Component {
     constructor() {
         super()
         this.state = {
@@ -31,15 +32,15 @@ export default class goodsList extends Component {
             ]
         }
     }
-    addGoods = (goods) => {
-        // 同步
-        // const action = addActions(goods)
-        // store.dispatch(action)
+    // addGoods = (goods) => {
+    //     // 同步
+    //     // const action = addActions(goods)
+    //     // store.dispatch(action)
 
-        //异步
-        const action = addActionsAsync(goods)
-        store.dispatch(action)
-    }
+    //     //异步
+    //     const action = addActionsAsync(goods)
+    //     store.dispatch(action)
+    // }
     render() {
         return (
             <div>
@@ -49,7 +50,7 @@ export default class goodsList extends Component {
                             <img src={item.url} alt="" />
                             <p>{item.name}</p>
                             <p>¥{item.price}</p>
-                            <Button onClick={() => this.addGoods(item)} style={{ marginTop: 10 }} type="success">加入购物车</Button>
+                            <Button onClick={() => this.props.addGoodsAsync(item)} style={{ marginTop: 10 }} type="success">加入购物车</Button>
                         </li>
                     })}
                 </ul>
@@ -57,3 +58,12 @@ export default class goodsList extends Component {
         )
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addGoodsAsync(item) {
+            dispatch(addActionsAsync(item))
+        }
+    }
+}
+export default connect(null,mapDispatchToProps)(goodsList)

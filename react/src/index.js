@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import { Provider } from 'react-redux'
 
-import store from '../src/components/counter/store/store'
+import store from './components/cart-Redux/store/store'
 // 导入根组件
 import App from './App'
 

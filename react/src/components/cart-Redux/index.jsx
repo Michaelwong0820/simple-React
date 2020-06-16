@@ -7,35 +7,30 @@ import goodsList from './goodsList'
 import NotFound from '../router/404'
 
 import 'element-theme-default';
-import store from './store/store'
-export default class index extends Component {
-    constructor() {
-        super()
-        this.state = {
-            conut: this.clec()
-        }
-    }
-    clec = () => {
-        let goodsLi = store.getState()
-        let num = 0
-        goodsLi.forEach(item => {
-            num += item.num
-        })
-        return num
-    }
-    componentWillMount () {
-        store.subscribe(()=>{
-            this.setState({
-                conut:this.clec()
-            })
-        })
+// 建立组件和仓库的关系
+import { connect } from 'react-redux'
+class index extends Component {
+    // clec = () => {
+    //     let goodsLi = store.getState()
+    //     let num = 0
+    //     goodsLi.forEach(item => {
+    //         num += item.num
+    //     })
+    //     return num
+    // }
+    componentWillMount() {
+        // store.subscribe(()=>{
+        //     this.setState({
+        //         conut:this.clec()
+        //     })
+        // })
         //页面刷新时存储商品信息
         window.onbeforeunload = () => {
-            localStorage.setItem('GOODS',JSON.stringify(store.getState()))
+            localStorage.setItem('GOODS',JSON.stringify(this.props.goodsList))
         }
     }
     componentWillUnmount() {
-        store.unsubscribe&&store.unsubscribe()
+        store.unsubscribe && store.unsubscribe()
     }
     render() {
         return (
@@ -46,7 +41,7 @@ export default class index extends Component {
                             商品列表
                         </Link>
                         <Link to='/cart'>
-                            购物车{this.state.conut>0&&<span>({this.state.conut})</span>}
+                            购物车{this.props.count > 0 && <span>({this.props.count})</span>}
                         </Link>
                     </p>
                 </h2>
@@ -60,3 +55,19 @@ export default class index extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    const clec = () => {
+        let goodsLi = state
+        let num = 0
+        goodsLi.forEach(item => {
+            num += item.num
+        })
+        return num
+    }
+    return {
+        count: clec(),
+        goodsList: state
+    }
+}
+export default connect(mapStateToProps, null)(index)

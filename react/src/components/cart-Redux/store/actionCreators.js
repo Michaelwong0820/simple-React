@@ -10,6 +10,6 @@ export function addActionsAsync (item) {
     return (dispatch)=>{
         setTimeout(()=>{
             dispatch(addActions(item))
-        },2000)
+        },200)
     }
 }
