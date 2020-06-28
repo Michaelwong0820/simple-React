@@ -1,9 +1,9 @@
-import { json } from "body-parser";
+import {ADD_GOODS,UPDATE_GOODS,DELETE_GOODS} from './actionType'
 const goodList = JSON.parse(localStorage.getItem('GOODS')|| '[]')
 export default function (state=goodList,action) {
     // console.log(action);
     switch (action.type) {
-        case 'ADD_GOODS':
+        case ADD_GOODS:
             // 深拷贝对象 不影响state的值类型
             let GoodsLIST = JSON.parse(JSON.stringify(state))
             let goods = GoodsLIST.find(item=>item.id === action.goods.id)
@@ -14,7 +14,7 @@ export default function (state=goodList,action) {
             }
             
             return GoodsLIST
-        case 'UPDATA_GOODS':
+        case UPDATE_GOODS:
             // 深拷贝对象 不影响state的值类型
             let updataList = JSON.parse(JSON.stringify(state))
             let updataobj = updataList.find(item=>item.id === action.goods.id)
@@ -22,7 +22,7 @@ export default function (state=goodList,action) {
 
             return updataList
 
-        case 'DELETE_GOODS':
+        case DELETE_GOODS:
             // 深拷贝对象 不影响state的值类型
             let deleteList = JSON.parse(JSON.stringify(state))
             // deleteList = deleteList.filter(item=>{

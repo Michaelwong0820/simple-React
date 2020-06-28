@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import store from './store/store'
+// import store from './store/store'
+import {connect} from 'react-redux'
+
+import {updateActions,deleteActions} from './store/actionCreators'
 
 import { Table,Button,InputNumber,MessageBox,Message } from 'element-react'
-export default class Cart extends Component {
+class Cart extends Component {
     constructor() {
         super()
         this.state = {
@@ -41,50 +44,53 @@ export default class Cart extends Component {
                 }
             }
             ],
-            goodsList:[],//产品数据列表
-            toTalPrice:this.calcTotalPrice(),//总价
+            // goodsList:[],//产品数据列表
+            // toTalPrice:this.calcTotalPrice(),//总价
 
         }
     }
-    componentWillMount() {
-        this.setState({
-            goodsList:store.getState()
-        })
-        store.subscribe(()=>{
-            this.setState({
-                goodsList:store.getState(),
-                toTalPrice:this.calcTotalPrice()
-            })
-        })
-    }
-    calcTotalPrice = () => {
-        let total = 0
-        store.getState().forEach(item=>{
-            total += item.num * item.price
-        })
-        return total
-    }
+    // componentWillMount() {
+    //     this.setState({
+    //         goodsList:store.getState()
+    //     })
+    //     store.subscribe(()=>{
+    //         this.setState({
+    //             goodsList:store.getState(),
+    //             toTalPrice:this.calcTotalPrice()
+    //         })
+    //     })
+    // }
+    // calcTotalPrice = () => {
+    //     let total = 0
+    //     store.getState().forEach(item=>{
+    //         total += item.num * item.price
+    //     })
+    //     return total
+    // }
+    //修改商品
     editChange = (id,value) => {
         console.log(id,value);
-        store.dispatch({
-            type:"UPDATA_GOODS",
-            goods:{
-                id,
-                value
-            }
-        })
+    //     store.dispatch({
+    //         type:"UPDATA_GOODS",
+    //         goods:{
+    //             id,
+    //             value
+    //         }
+    //     })
+        this.props.updateGoods({id,value})
     }
     deleteGoods = (id)=>{
         // console.log(id);
         MessageBox.confirm('此操作将永久删除该商品, 是否继续?', '提示', {
             type: 'warning'
           }).then(() => {
-            store.dispatch({
-                type:'DELETE_GOODS',
-                goods:{
-                    id
-                }
-            })
+            // store.dispatch({
+            //     type:'DELETE_GOODS',
+            //     goods:{
+            //         id
+            //     }
+            // })
+            this.props.deleteGoods(id)
             Message({
               type: 'success',
               message: '删除成功!'
@@ -98,20 +104,46 @@ export default class Cart extends Component {
         
         
     }
-    componentWillUnmount() {
-        store.unsubscribe&&store.unsubscribe()
-    }
+    // componentWillUnmount() {
+    //     store.unsubscribe&&store.unsubscribe()
+    // }
     render() {
         return (
             <div>
                 <Table 
                     style={{width: '100%'}}
                     columns={this.state.columns}
-                    data={this.state.goodsList}
+                    data={this.props.goodsList}
                 />
-                <p>总价：{this.state.toTalPrice}</p>
+                <p>总价：{this.props.toTalPrice}</p>
                 <Button type="success">结算</Button>
             </div>
         )
     }
 }
+export default connect(
+    state => {
+        const calcPrice = () => {
+            let totalPrice = 0 
+            state.forEach(item=>{
+                totalPrice += item.num * item.price
+            })
+            return totalPrice
+        }
+        return {
+            goodsList:state,
+            toTalPrice:calcPrice()
+        }
+    }
+,dispatch => {
+    return {
+        updateGoods(item) {
+            // 将仓库中修改商品的方法映射到props中
+            dispatch(updateActions(item))
+        },
+        deleteGoods(item) {
+            //将仓库中删除商品的方法映射到props中
+            dispatch(deleteActions(item))
+        }
+    }
+})(Cart)
